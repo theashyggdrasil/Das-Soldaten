@@ -5,13 +5,18 @@ using UnityEngine.UI;
 
 public class BossEnemyManager : MonoBehaviour {
 
-    private int randomInt = 1;
-    private Rigidbody2D rb, rbClone;
-    public GameObject player;
+    //variables
+    
+    //hidden data
+    private int randomInt = 1; //random initializer
+    private Rigidbody2D rb, rbClone; //private data
     private Vector3 startingPosition;
+    private float bossEnemyHealth = 25;
+    
+    //accesable data
+    public GameObject player; 
     public GameObject bullet, bubbleBullet, fireBullet, OneOpenShotAttack,coin;
     public Transform bulletSpawnLocation, oneOpenShotLocation;
-    public float bossEnemyHealth = 25;
     public static BossEnemyManager instance;
     public Text newBestTime, newHighScore;
 
@@ -22,6 +27,8 @@ public class BossEnemyManager : MonoBehaviour {
         SoundManager.instance.bossBattleAudio.enabled = true;
         SoundManager.instance.bossBattleAudio.Play();
     }
+    
+    //on creation
     private void Awake()
     {
         startingPosition = transform.position;
@@ -64,6 +71,7 @@ public class BossEnemyManager : MonoBehaviour {
     }
 
 
+    //choose random attack
     IEnumerator RandomAttack()
     {
 
@@ -97,11 +105,13 @@ public class BossEnemyManager : MonoBehaviour {
         }
     }
 
+    //setup random attack area
     private void RandomAttackChoice()
     {
         randomInt = Random.Range(1, 6);
     }
 
+    //setup coroutines to run for enemy
     IEnumerator SingleShotAttack() // randomInt == 1
     {
         yield return new WaitForSeconds(2.0f);
@@ -152,6 +162,7 @@ public class BossEnemyManager : MonoBehaviour {
         StartCoroutine("RandomAttack");
     }
 
+    //collectable routine
     private void CoinCreate()
     {
         GameObject clone;
@@ -160,6 +171,7 @@ public class BossEnemyManager : MonoBehaviour {
         clone = Instantiate(coin, new Vector2(randomX, randomY), transform.rotation) as GameObject;
     }
 
+    //space detection
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "BoundaryUp" || other.gameObject.tag == "BoundaryDown")
@@ -202,7 +214,7 @@ public class BossEnemyManager : MonoBehaviour {
 
     }
 
-
+    //return to start routine
     void BackStartingPosition()
     {
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, startingPosition, 0.1f);
@@ -218,6 +230,7 @@ public class BossEnemyManager : MonoBehaviour {
         rbClone.velocity = new Vector3(randomX, randomY) * 0.75f;
     }
 
+    //bubble shot coroutine
     void BubbleShot()
     {
         GameObject clone;
@@ -228,6 +241,7 @@ public class BossEnemyManager : MonoBehaviour {
         rbClone.velocity = new Vector3(randomX, randomY) * 1.00f;
     }
 
+    //fire shot routine
     void FireShot()
     {
         GameObject clone;
@@ -237,7 +251,8 @@ public class BossEnemyManager : MonoBehaviour {
         float randomY = Random.Range(player.transform.position.y - transform.position.y - 1.0f, player.transform.position.y - transform.position.y + 1.0f);
         rbClone.velocity = new Vector3(randomX, randomY) * 1.0f;
     }
-
+    
+    //one shot routine
     void OneOpenShot()
     {
         List<Transform> children;
@@ -255,6 +270,7 @@ public class BossEnemyManager : MonoBehaviour {
         Destroy(children[randomInt + 2].gameObject);
     }
 
+    //decrease boss health
     public void BossEnemyHealthDecrease()
     {
         bossEnemyHealth--;
