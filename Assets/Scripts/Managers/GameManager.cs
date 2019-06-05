@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//different states of gameplay
 public enum GameState
 {
     menu,
@@ -17,25 +18,24 @@ public enum GameState
 
 public class GameManager : MonoBehaviour {
 
+    //variables
     public GameState currentGameState; // initializes the "currentGameState" which allow us to initially set the currentGameState to menu and have it change based on where
                                        //we are in the game
     public Canvas inGameCanvas, gameOverCanvas, pauseCanvas, nextLevelCanvas, backgroundCanvas;
-
     public static GameManager instance; // creates the singleton public variable of GameManager called instance
-
     public int levelScore;
-
     public float playedTime, startTime;
 
     void Awake()
     {
+        //set initial objects
             inGameCanvas = GameObject.Find("InGameCanvas").GetComponent<Canvas>();
             gameOverCanvas = GameObject.Find("GameOverCanvas").GetComponent<Canvas>();
             pauseCanvas = GameObject.Find("PauseCanvas").GetComponent<Canvas>();
             nextLevelCanvas = GameObject.Find("NextLevelCanvas").GetComponent<Canvas>();
             backgroundCanvas = GameObject.Find("BackgroundCanvas").GetComponent<Canvas>();
         
-
+        //determine scene
         Scene scene = SceneManager.GetActiveScene();
         if (scene == SceneManager.GetSceneByName("MainMenu"))
         {
@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour {
         
     }
 
+    //ingame routine
     public void InGame()
     {
         SetGameState(GameState.inGame); //change this to menu when doing actual game
@@ -80,11 +81,13 @@ public class GameManager : MonoBehaviour {
         TimeReset();
     }
     
+    //game over routine
     public void GameOver()
     {
         SetGameState(GameState.gameOver); // sets game state to game over when running this method
     }
 
+    //mainmenu routine
     private void MainMenu()
     {
         SetGameState(GameState.menu);
@@ -92,6 +95,7 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    //loadmenu routine
     public void LoadMainMenu()
     {
         UIManager.instance.MainMenu.enabled = true;
@@ -107,13 +111,14 @@ public class GameManager : MonoBehaviour {
         SetGameState(GameState.nextLevel);
         // add the stats and onswitches for end of level
     }
-
+    
+    //quit menu routine
     public void QuitGame()
         {
             Application.Quit();
         }
 
-
+    //pause menu routine
     public void PauseGame()
     {
         SetGameState(GameState.pause); //sets the game state to pause
